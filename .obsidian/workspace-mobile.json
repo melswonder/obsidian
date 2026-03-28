@@ -4,17 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "af42000301e82ed3",
+        "id": "27380ec96d7a2166",
         "type": "tabs",
         "children": [
           {
-            "id": "3715f0e8492adefe",
+            "id": "35028e65a3395b1b",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "LLMのプロンプトエンジニアリング.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "新規タブ"
+              "title": "LLMのプロンプトエンジニアリング"
             }
           }
         ]
@@ -108,6 +112,7 @@
         "state": {
           "type": "backlink",
           "state": {
+            "file": "LLMのプロンプトエンジニアリング.md",
             "collapseAll": false,
             "extraContext": false,
             "sortOrder": "alphabetical",
@@ -126,6 +131,7 @@
         "state": {
           "type": "outgoing-link",
           "state": {
+            "file": "LLMのプロンプトエンジニアリング.md",
             "linksCollapsed": false,
             "unlinkedCollapsed": true
           },
@@ -139,6 +145,7 @@
         "state": {
           "type": "outline",
           "state": {
+            "file": "LLMのプロンプトエンジニアリング.md",
             "followCursor": false,
             "showSearch": false,
             "searchQuery": ""
@@ -161,6 +168,9 @@
       "bases:新規ベースを作成": false
     }
   },
-  "active": "3715f0e8492adefe",
-  "lastOpenFiles": []
+  "active": "35028e65a3395b1b",
+  "lastOpenFiles": [
+    "Designing Data-Intensive Applications, 2nd Edition.md",
+    "LLMのプロンプトエンジニアリング.md"
+  ]
 }
