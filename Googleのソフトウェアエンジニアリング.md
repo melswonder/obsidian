@@ -3426,7 +3426,8 @@ Tom Manshreck 編
 
 †8　訳注：プログラミング言語C++のISO標準で2011年に正式な規格として承認されたC++11（以後、C++14/C++17/C++20が同様に承認）からサポートされており、オブジェクトのコピーを減らすために利用される。`std::move()`は、引数として受け取る所有権移動元の値を右辺値として返し、ムーブコンストラクターやムーブ代入演算子を持つ所有権移動先オブジェクトに渡せる。
 
-//`Foo*`を引数に取る、渡されるポインターの所有権を引き受けるかもしれないし
+```cpp
+// `Foo*`を引数に取る、渡されるポインターの所有権を引き受けるかもしれないし
 // 引き受けないかもしれない関数
 void TakeFoo(Foo* arg);
 
@@ -3434,16 +3435,19 @@ void TakeFoo(Foo* arg);
 // 関数への呼び出しは読者に何も教えない
 Foo* my_foo(NewFoo());
 TakeFoo(my_foo);
+```
 
 　以上を、以下と比較してみてほしい。
 
-%% // `std::unique_ptr<Foo>`を引数に取る関数
-void TakeFoo(std::unique_ptr<Foo> arg); %%
+```cpp
+// `std::unique_ptr<Foo>`を引数に取る関数
+void TakeFoo(std::unique_ptr<Foo> arg);
 
-%% // この関数の呼び出しは全て、ポインターの所有権は明け渡され関数から
+// この関数の呼び出しは全て、ポインターの所有権は明け渡され関数から
 // 制御が戻った後`unique_ptr`は利用できないということを明示的に示している
 std::unique_ptr<Foo> my_foo(FooFactory());
-TakeFoo(std::move(my_foo)); %%
+TakeFoo(std::move(my_foo));
+```
 
 　スタイルガイドのルールを前提として、このルールが当てはまる場合は常に、全ての呼び出し箇所が所有権移転の明確なエビデンスを含むようにすることを我々は保証している。このシグナルが置かれていることで、コードの読者は全関数呼び出しの挙動をいちいち理解する必要がない。API内に、そのAPIとの相互作用が実際にはどのような挙動になるのかを推論するために十分な情報が提供されている。呼び出し箇所にある、挙動についてのこの明確なドキュメンテーションにより、コード片が読みやすく、理解可能なものとして維持されることが保証されている。我々が目指しているのは局所的（local）な推論である。そこでのゴールは、その関数の実装を含む他のコードを探し出したり参照したりしなくても、呼び出し箇所で何が起こっているかを明確に理解できることだ。
 
@@ -3529,8 +3533,10 @@ TakeFoo(std::move(my_foo)); %%
 
 †18　訳注：コードが実行中に、そのコード自体の情報を読んだりコードを書き換えたりする機能。
 
+```python
 if hasattr(my_object, 'foo'):
-some_var = getattr(my_object, 'foo')
+    some_var = getattr(my_object, 'foo')
+```
 
 　まずこの例に関しては、全く問題ないように見えるかもしれない。だが以下の場合を考えてみてほしい。
 
@@ -4541,11 +4547,11 @@ int AddCustomer(string name, string address);
 
 　Googleでは、しばしばドキュメンテーションに「鮮度日付（freshness date）」を付加する。そうしたドキュメントにはドキュメントが最後にレビューされた日時が付記してあり、そのドキュメンテーション集のメタデータ（metadata：データに関するデータ）が、そのドキュメントに例えば3か月間手がつけられていない場合に、eメールでリマインダー（reminder：忘れないように思い出させる通知）を送ることになる。下記の例で示すようにそのような鮮度日付は、ドキュメントの問題をバグとして追跡することと並び、ドキュメンテーション集の長期的な保守が容易となるよう促せる。長期的な保守の容易さこそが、ドキュメントにとっての主要な関心事である。
 
-<!--*
+```text
 # ドキュメントの鮮度: より詳細な情報は、go/fresh-source
 # (https://goto.google.com/fresh-source)を参照のこと。
 freshness: { owner: `username` reviewed: '2019-02-27' }
-*-->
+```
 
 　そのようなドキュメントのオーナーであるユーザーには、そのドキュメントの鮮度日付を最新に保つインセンティブがある（そしてそのドキュメントがソースコントロール下に入っているなら、コードレビューが必要である）。その結果、鮮度日付はドキュメントがときどき点検されることを保証する低コストな手段となっている。Googleでは、ドキュメント自体の中の鮮度日付に、ドキュメントのオーナーを「最終レビュー者は……」という署名で含める方式の採用も増えている。
 
@@ -5123,6 +5129,7 @@ Tom Manshreck 編
 
 例12-1 トランザクションAPI
 
+```
 public void processTransaction(Transaction transaction) {
   if (isValid(transaction)) {
     saveToDatabase(transaction);
@@ -5145,6 +5152,7 @@ public void setAccountBalance(String accountName, int balance) {
 public void getAccountBalance(String accountName) {
   // アカウント残高を確定するためにデータベースからトランザクションを読み込む
 }
+```
 
 　このコードをテストする方法として魅力的に映るのは、例12-2で実際に示されるように、「private」可視性修飾子を削除して、実装ロジックを直接テストすることだろう。
 
@@ -5152,6 +5160,7 @@ public void getAccountBalance(String accountName) {
 
 例12-2 トランザクションAPIの素朴なテスト
 
+```
 @Test
 public void emptyAccountShouldNotBeValid() {
   assertThat(processor.isValid(newTransaction().setSender(EMPTY_ACCOUNT)))
@@ -5167,6 +5176,7 @@ public void shouldSaveSerializedData() {
       .setAmount(100));
   assertThat(database.get(123)).isEqualTo("me,you,100");
 }
+```
 
 　このテストは、トランザクションを処理するメソッドと、実際のユーザーが行うであろう形とはかなり異なる形でやり取りしている。つまり、このテストはシステムの内部状態をのぞき込んで、システムのAPIの一部としては公開されていないメソッドを呼び出しているのだ。結果として、このテストは脆くなっている。そしてテスト対象システムのリファクタリング（システムのメソッドのリネーム、メソッドのヘルパークラスへの括り出し、シリアライゼーションフォーマットの変更等）は大体どんなものでも、そのような変更がそのクラスの実際のユーザーからは見えないとしても、そのテストを破綻させるだろう。
 
@@ -5180,6 +5190,7 @@ public void shouldSaveSerializedData() {
 
 例12-3 公開APIのテスト
 
+```
 @Test
 public void shouldTransferFunds() {
   processor.setAccountBalance("me", 150);
@@ -5205,6 +5216,7 @@ public void shouldNotPerformInvalidTransactions() {
   assertThat(processor.getAccountBalance("me")).isEqualTo(50);
   assertThat(processor.getAccountBalance("you")).isEqualTo(20);
 }
+```
 
 　公開APIのみを利用するテストは定義上、テスト対象システムに、そのシステムのユーザーがアクセスするのと同じやり方でアクセスする。そのようなテストは明示的な契約を結ぶので、より現実的であり、脆さがより低い。つまり、そのようなテストが破綻するなら、システムの既存ユーザーの活動もまた破綻するだろうということを必然的に意味する。それらの契約のみをテストするというのは要するに、テストにつまらない変更を加えた結果についていちいち心配する必要なしに、システム内部のリファクタリングはどんなものでもやりたいようにやれるということだ。
 
@@ -5228,11 +5240,13 @@ public void shouldNotPerformInvalidTransactions() {
 
 例12-4 脆いインタラクションテスト
 
+```
 @Test
 public void shouldWriteToDatabase() {
   accounts.createUser("foobar");
   verify(database).put("foobar");
 }
+```
 
 　このテストは特定の呼び出しがデータベースAPIに対して行われたことを検証するが、このテストが失敗することがある態様として、2つの異なるものが存在する。
 
@@ -5245,11 +5259,13 @@ public void shouldWriteToDatabase() {
 
 例12-5 状態に対してテストする
 
+```
 @Test
 public void shouldCreateUsers() {
   accounts.createUser("foobar");
   assertThat(accounts.getUser("foobar")).isNotNull();
 }
+```
 
 　このテストは我々が関心を持つものをより正確に表している。つまり、テスト対象システムとの相互作用が起こった後の、そのテスト対象システムの状態だ。
 
@@ -5289,6 +5305,7 @@ public void shouldCreateUsers() {
 
 例12-6 不完全で乱雑なテスト
 
+```
 @Test
 public void shouldPerformAddition() {
   Calculator calculator = new Calculator(new RoundingStrategy(),
@@ -5296,6 +5313,7 @@ public void shouldPerformAddition() {
   int result = calculator.calculate(newTestCalculation());
   assertThat(result).isEqualTo(5); // この数字はどこから来たのか。
 }
+```
 
 　このテストはたくさんの重要ではない情報をコンストラクターに渡し、テストの実際に重要な部分はヘルパーメソッドの内部に隠されている。例12-7で例証するように、ヘルパーメソッドの入力を明確にすることでこのテストはもっと完全にでき、別のヘルパーを用いて`calculator`オブジェクトの初期化に関する重要でない詳細を隠すことでもっと簡潔にできる。
 
@@ -5303,12 +5321,14 @@ public void shouldPerformAddition() {
 
 例12-7 完全で簡潔なテスト
 
+```
 @Test
 public void shouldPerformAddition() {
   Calculator calculator = newCalculator();
   int result = calculator.calculate(newCalculation(2, Operation.PLUS, 3));
   assertThat(result).isEqualTo(5);
 }
+```
 
 　完全性と簡潔性は、後で論じる様々な考え方のところでも再度触れることになるが、中でも、コードの共有をめぐる考え方に関連性が高い。とりわけ、より明確なテストにつながるのであれば、DRY（Don't Repeat Yourself：繰り返しをやめる）原則に違反する価値がありうる場合が多いという考え方だ。覚えておくべきなのは、テストの本体部分は、重要でない情報や紛らわしい情報は全く含まずに、テストを理解するのに必要な情報を全部含むべきであるということだ。
 
@@ -5320,12 +5340,14 @@ public void shouldPerformAddition() {
 
 例12-8 トランザクションの断片的コード
 
+```
 public void displayTransactionResults(User user, Transaction transaction) {
   ui.showMessage("購入した物は" + transaction.getItemName());
   if (user.getBalance() < LOW_BALANCE_THRESHOLD) {
     ui.showMessage("警告: 残高が少ない!");
   }
 }
+```
 
 　例12-9で提示されるような、メソッドが表示するかもしれない両方のメッセージを対象として扱うテストを目にすることは珍しくないだろう。
 
@@ -5333,6 +5355,7 @@ public void displayTransactionResults(User user, Transaction transaction) {
 
 例12-9 メソッド駆動のテスト
 
+```
 @Test
 public void testDisplayTransactionResults() {
   transactionProcessor.displayTransactionResults(
@@ -5343,6 +5366,7 @@ public void testDisplayTransactionResults() {
   assertThat(ui.getText()).contains("購入した物は何かのアイテム");
   assertThat(ui.getText()).contains("残高が少ない");
 }
+```
 
 　このようなテストがある場合、おそらくテストは1番目のメソッドだけを対象とする状態から始まったものだ。2番目のメッセージの追加時に、（先に論じた変化しないテストという考え方に違反して）後からエンジニアがテストを拡張したというわけだ。この変更が、悪い前例を作ってしまった。すなわち、テスト対象のメソッドが複雑になり実装する機能が増えるにつれて、そのメソッドのユニットテストはますます入り組んだものとなり、どんどん扱うのが難しくなっていくだろう。
 
@@ -5362,6 +5386,7 @@ public void testDisplayTransactionResults() {
 
 例12-10 挙動駆動のテスト
 
+```
 @Test
 public void displayTransactionResults_showsItemName() {
   transactionProcessor.displayTransactionResults(
@@ -5377,6 +5402,7 @@ public void displayTransactionResults_showsLowBalanceWarning() {
       new Transaction("何かのアイテム", dollars(3)));
   assertThat(ui.getText()).contains("残高が少ない");
 }
+```
 
 　単一のテストを分割するのに必要な追加の定形コードには期待以上の価値があり（[https://oreil.ly/hcoon](https://oreil.ly/hcoon)）、結果としてできあがるテストは元のテストよりずっと明確である。挙動駆動のテストは、いくつかの理由で、メソッド駆動のテストより明確となる傾向がある。第一に、挙動駆動のテストは自然言語を読むのに比較的近い形で読め、頭の中での手間のかかる構文解析を要さずに自然に理解できるようになっている。第二に、挙動駆動のテストは、各テストの範囲が比較的限られているので、原因と結果（[https://oreil.ly/dAd3k](https://oreil.ly/dAd3k)）をより明確に表現する。最後に、各テストが短く説明的であるという事実により、どの機能が既にテストされているか知るのが比較的容易となっており、エンジニアは、既存メソッドの拡張を積み重ねていくのではなく、効率化された新規テストメソッドを追加するよう促される。
 
@@ -5392,6 +5418,7 @@ public void displayTransactionResults_showsLowBalanceWarning() {
 
 例12-11 うまく構成されたテスト
 
+```
 @Test
 public void transferFundsShouldMoveMoneyBetweenAccounts() {
   // 最初の残高が150ドルと20ドルの2つの口座があるという前提条件下で
@@ -5405,6 +5432,7 @@ public void transferFundsShouldMoveMoneyBetweenAccounts() {
   assertThat(account1.getBalance()).isEqualTo(usd(50));
   assertThat(account2.getBalance()).isEqualTo(usd(120));
 }
+```
 
 　自明なテストにはこのレベルの説明は必ずしも必要ではなく、コメントを省略しつつ空白文字に頼って各部分を明確にするという形で通常は十分だ。しかしコメントが明示的であれば、比較的凝ったテストの理解が容易となる場合がある。このパターンにより、3つのレベルの粒度でテストを読むことが可能になる。
 
@@ -5424,6 +5452,7 @@ public void transferFundsShouldMoveMoneyBetweenAccounts() {
 
 例12-12 テスト内で「～場合」/「その場合は～」のブロックを交互に置く
 
+```
 @Test
 public void shouldTimeOutConnections() {
   // 2人のユーザーがいるという前提条件下で
@@ -5450,6 +5479,7 @@ public void shouldTimeOutConnections() {
   assertThat(user1.isConnected()).isFalse();
   assertThat(user2.isConnected()).isFalse();
 }
+```
 
 　このようなテストを書く場合、うっかり複数の挙動を同時にテストしていないか慎重に確かめるようにしなければならない。各テストは単一の挙動のみを対象とすべきであり、ユニットテストの圧倒的大部分では、必要な「～場合」と「その場合は～」のブロックは1つだけだ。
 
@@ -5463,6 +5493,7 @@ public void shouldTimeOutConnections() {
 
 例12-13 入れ子状命名パターンのサンプル数個
 
+```
 describe("乗法", function() {
   describe("正の数に", function() {
     var positiveNumber = 10;
@@ -5483,6 +5514,7 @@ describe("乗法", function() {
     });
   });
 });
+```
 
 　こうした情報全てをメソッド名の中にコード化することを要求する別の言語もあり、例12-14で示されるようなメソッド命名パターンを持つに至っている。
 
@@ -5490,12 +5522,14 @@ describe("乗法", function() {
 
 例12-14 メソッド命名パターンのサンプル数個
 
+```
 multiplyingTwoPositiveNumbersShouldReturnAPositiveNumber
 (2つの正の数を乗ずると正の数を返すべきである)
 multiply_positiveAndNegative_returnsNegative
 (正の数と負の数を乗ずると負の数を返すべきである)
 divide_byZero_throwsException
 (ゼロで除すると例外を発生させる)
+```
 
 　こうした名称は、本番環境向けコード内のメソッド向けに通常書くよりずっと冗長だが、本番環境向けとはユースケースが異なっている。つまり、これらのメソッドを呼び出すコードを書く必要があることは絶対にない一方、テスト失敗のリポート内でこれらのメソッドの名称を人間が読まなければならないことは頻繁にある。したがって、余分な冗長さが正当化されているのだ。
 
@@ -5511,6 +5545,7 @@ divide_byZero_throwsException
 
 例12-15 バグを隠すロジック
 
+```
 @Test
 public void shouldNavigateToAlbumsPage() {
   String baseUrl = "http://photos.google.com/";
@@ -5518,6 +5553,7 @@ public void shouldNavigateToAlbumsPage() {
   nav.goToAlbumPage();
   assertThat(nav.getCurrentUrl()).isEqualTo(baseUrl + "/albums");
 }
+```
 
 　ここには大したロジックはなく、実際には文字列結合が1つあるだけだ。しかしロジックをほんの少し取り除いてテストを単純化すると、例12-16で実際に示されるようにバグが直ちに明確になる。
 
@@ -5525,6 +5561,7 @@ public void shouldNavigateToAlbumsPage() {
 
 例12-16 ロジックのないテストはバグを明るみに出す
 
+```
 @Test
 public void shouldNavigateToPhotosPage() {
   Navigator nav = new Navigator("http://photos.google.com/");
@@ -5532,6 +5569,7 @@ public void shouldNavigateToPhotosPage() {
   assertThat(nav.getCurrentUrl()))
       .isEqualTo("http://photos.google.com//albums"); // おっと!
 }
+```
 
 　文字列全体が書き出されると、1つだけではなく2つのスラッシュがURL内にあることを期待してしまっているというのがすぐに理解できる。本番環境向けのコードに同様の誤りがあった場合、このテストはバグを検知できないだろう。テストがより説明的で意味がわかりやすいものとなるのであれば、URLの基本部分の重複くらいは安いものだ（本章の後の方でのDAMP対DRYの議論を参照してほしい）。
 
@@ -5543,12 +5581,16 @@ public void shouldNavigateToPhotosPage() {
 
 　以下は駄目な失敗メッセージの例だ。
 
+```text
 テスト失敗: アカウントが閉鎖されている
+```
 
 　アカウントが閉鎖されたからテストが失敗したのか、それともアカウントは閉鎖されていることが期待されていて、アカウントが閉鎖されていなかったのでテストが失敗したのか。良い失敗メッセージは、期待される状態と実際の状態を明確に区別し、結果に関する背景情報をより多く与える。
 
 「閉鎖」状態のアカウントを期待したが、以下アカウントを得た:
-    <{名前: "my-account", 状態: "開放"}
+```text
+<{名前: "my-account", 状態: "開放"}
+```
 
 　優れたライブラリーがあれば、有用な失敗メッセージを簡単に書けるようになるための後押しとなりうる。例12-17の、Javaのテスト内でのアサーションを検討してみよう。1番目のアサーションは古典的なJUnitのアサート関数を使い、2番目はGoogleが開発したアサーションライブラリーであるTruth（[https://truth.dev/](https://truth.dev/)）を使っている。
 
@@ -5556,9 +5598,11 @@ public void shouldNavigateToPhotosPage() {
 
 例12-17 Truthライブラリーを用いたアサーション
 
+```
 Set<String> colors = ImmutableSet.of("red", "green", "blue");
 assertTrue(colors.contains("orange")); // JUnit
 assertThat(colors).contains("orange"); // Truth
+```
 
 　第一のアサーションはBoolean型の値のみを受け取るため「<真>を期待したが<偽>だった」のような汎用のエラーメッセージを出せるだけで、そのようなメッセージは、失敗しているテストの出力内にあってもあまり参考にならない。第二のアサーションはアサーションの対象を明示的に受け取るため、「アサーションエラー: <[赤, 緑, 青]>は<オレンジ>を含むべきだった」のようにもっと有用なエラーメッセージを出せる。
 
@@ -5568,10 +5612,12 @@ assertThat(colors).contains("orange"); // Truth
 
 例12-18 Go言語でのテストアサーション
 
+```
 result := Add(2, 3)
 if result != 5 {
   t.Errorf("Add(2, 3) = %v, 期待されるのは %v", result, 5)
 }
+```
 
 ## 12.4　テストとコード共有：DRYではなくDAMP
 
@@ -5585,6 +5631,7 @@ if result != 5 {
 
 例12-19 DRYすぎるテスト
 
+```
 @Test
 public void shouldAllowMultipleUsers() {
   List<User> users = createUsers(false, false);
@@ -5628,6 +5675,7 @@ private static void validateForumAndUsers(Forum forum, List<User> users) {
         .isEqualTo(user.getState() == State.BANNED);
   }
 }
+```
 
 　このコードの問題は、前述の明確性についての議論に基づけば明白なはずだ。一例として、テストの本体部分は非常に簡潔であるにもかかわらず、完全ではない。つまり、ファイルの全然別の部分にスクロールしなければ読者が見ることのできないヘルパーメソッド内に重要な詳細が隠されている。それらのヘルパーは、一いち瞥べつしただけで検証するのを困難にするロジックだらけでもある（バグは見つかっただろうか）。例12-20で示されるように、DAMPを用いて書き直すと、このテストはより明確になる。
 
@@ -5635,6 +5683,7 @@ private static void validateForumAndUsers(Forum forum, List<User> users) {
 
 例12-20 テストはDAMPであるべきである
 
+```
 @Test
 public void shouldAllowMultipleUsers() {
   User user1 = newUser().setState(State.NORMAL).build();
@@ -5658,6 +5707,7 @@ public void shouldNotRegisterBannedUsers() {
   } catch(BannedUserException ignored) {}
   assertThat(forum.hasRegisteredUser(user)).isFalse();
 }
+```
 
 　これらのテストは重複が増え、テストの本体部分が少々長くなっているが、追加された冗長性にはその価値がある。各々のテストははるかに意味のあるものとなり、テストの本体部分を離れることなく全体を理解可能である。これらのテストの読者は、テストが能書き通りに動作しつつもバグは1つも隠れていないことについて、自信を持てる。
 
@@ -5671,6 +5721,7 @@ public void shouldNotRegisterBannedUsers() {
 
 例12-21 曖昧な名称を持つ共有値
 
+```
 private static final Account ACCOUNT_1 = Account.newBuilder()
     .setState(AccountState.OPEN).setBalance(50).build();
 
@@ -5691,6 +5742,7 @@ public void canBuyItem_returnsFalseWhenBalanceInsufficient() {
 public void canBuyItem_returnsFalseForClosedAccounts() {
   assertThat(store.canBuyItem(ITEM, ACCOUNT_2)).isFalse();
 }
+```
 
 　この戦略を取ればテストを非常に簡潔にできるが、テストスイートが発展するにつれて問題が起こる。一例としては、あるテスト向けに特定の値が選択された理由を理解するのが難しくなることがある。例12-21では、どのシナリオがテストされているのかという点は、幸いテストの名称（`canBuyItem_returnsFalseForClosedAccounts`等）が明確にしてくれる。だがそのシナリオにとって定数（constant）[†10](https://learning.oreilly.com/library/view/googlenosohutoueaenziniaringu-chi-sok-ke-neng-napuroguraminguwozhi-eruji-shu-wen-hua-purosesu/9784873119656/xhtml/p-018.xhtml#ref-chap14_10)`ACCOUNT_1`と`ACCOUNT_2`が適切であることを確かめるためには、各定数の定義まで上にスクロールする必要が依然としてある。`ACCOUNT_1`や`ACCOUNT_2`のような定数名の代わりにより説明的な定数名を使う（例えば`ACCOUNT_WITH_LOW_BALANCE` [残高の少ない口座] と`CLOSED_ACCOUNT` [閉鎖された口座] ）なら少々ましだ。しかしテストされる値（50や0）の正確な詳細を知るのは相変わらず難しくなっている。またそれらの定数が含む値の再利用が簡単なために、その説明的な定数名による説明内容がテストが要求するものと正確に一致していない場合さえも、エンジニアによる再利用を促しかねない。
 
@@ -5710,6 +5762,7 @@ public void canBuyItem_returnsFalseForClosedAccounts() {
 
 例12-22 ヘルパーメソッドを用いた共有値
 
+```
 # コンストラクターの各パラメーターに任意のデフォルト値を定義することで
 # コンストラクターをラップするヘルパーメソッド。
 def newContact(
@@ -5742,6 +5795,7 @@ public void fullNameShouldCombineFirstAndLastNames() {
       .build();
   assertThat(contact.getFullName()).isEqualTo("Ada Lovelace");
 }
+```
 
 ---
 
@@ -5761,6 +5815,7 @@ public void fullNameShouldCombineFirstAndLastNames() {
 
 例12-23 初期設定メソッド内の値への依存
 
+```
 private NameService nameService;
 private UserStore userStore;
 
@@ -5778,6 +5833,7 @@ public void shouldReturnNameFromService() {
   UserDetails user = userStore.get("user1");
   assertThat(user.getName()).isEqualTo("Donald Knuth");
 }
+```
 
 　明示的に特定の値に関心を持つこうしたテストは、そのような値を直接表明し、必要なら初期設定メソッド内で定義されたデフォルト値をオーバーライドすべきだ。結果としてできるテストは、例12-24に示されるように繰り返しを少し多く含むが、結果ははるかに説明的かつ意味がわかりやすくなっている。
 
@@ -5785,6 +5841,7 @@ public void shouldReturnNameFromService() {
 
 例12-24 初期設定メソッドの値をオーバーライドする
 
+```
 private NameService nameService;
 private UserStore userStore;
 
@@ -5801,6 +5858,7 @@ public void shouldReturnNameFromService() {
   UserDetails user = userStore.get("user1");
   assertThat(user.getName()).isEqualTo("Margaret Hamilton");
 }
+```
 
 ### 12.4.3　ヘルパーメソッドと検証メソッドの共有
 
@@ -5814,6 +5872,7 @@ public void shouldReturnNameFromService() {
 
 例12-25 概念的に単純なテスト
 
+```
 private void assertUserHasAccessToAccount(User user, Account account) {
   for (long userId : account.getUsersWithAccess()) {
     if (user.getId() == userId) {
@@ -5822,6 +5881,7 @@ private void assertUserHasAccessToAccount(User user, Account account) {
   }
   fail(user.getName() + "は以下アカウントにアクセスできない: " + account.getName());
 }
+```
 
 ### 12.4.4　テストインフラストラクチャーを定義する
 
@@ -5915,6 +5975,7 @@ Tom Manshreck 編
 
 例13-1 クレジットカードサービス
 
+```
 class PaymentProcessor {
   private `CreditCardService creditCardService;`
   ...
@@ -5925,6 +5986,7 @@ class PaymentProcessor {
     return success;
   }
 }
+```
 
 　テスト内で本物のクレジットカードサービスを利用することは実現不能だろう（テスト実行で生ずるまとまった額のトランザクション手数料を思い浮かべてみてほしい！）。だが本物のシステムの挙動をシミュレーションするために、代わりにテストダブルを利用できるだろう。例13-2のコードは極端に単純なテストダブルを示す。
 
@@ -5932,12 +5994,14 @@ class PaymentProcessor {
 
 例13-2 平凡なテストダブル
 
+```
 class TestDoubleCreditCardService implements CreditCardService {
  @Override
  public boolean chargeCreditCard(CreditCard creditCard, Money amount) {
    return true;
  }
 }
+```
 
 　このテストダブルはあまり有用には見えないが、それでもこれをテスト内で使うことで`makePayment()`メソッド内のロジックの一部をテストできるようになる。例えば、例13-3では、このテストが実行するコードパスはクレジットカードサービスの挙動に依存していないため、クレジットカードの有効期限が切れた場合にこのメソッドが適切に振る舞うことを検証できる。
 
@@ -5945,10 +6009,12 @@ class TestDoubleCreditCardService implements CreditCardService {
 
 例13-3 テストダブルの利用
 
+```
 @Test public void cardIsExpired_returnFalse() {
   boolean success = `paymentProcessor`.makePayment(EXPIRED_CARD, AMOUNT);
   assertThat(success).isFalse();
 }
+```
 
 　本章の次節以降では、この例より複雑な状況でテストダブルを利用する方法を論じていく。
 
@@ -5964,6 +6030,7 @@ class TestDoubleCreditCardService implements CreditCardService {
 
 例13-4 ディペンデンシーインジェクション
 
+```
 class PaymentProcessor {
   private CreditCardService creditCardService;
 
@@ -5972,6 +6039,7 @@ class PaymentProcessor {
   }
   ...
 }
+```
 
 　このコンストラクターを呼ぶコードが、適切な`CreditCardService`インスタンスを生成する責任を持っている。本番環境向けコードが外部のサーバーと通信する`CreditCardService`の実装を渡すことができるのに対し、このテストは例13-5で実際にやってみせているように、テストダブルを渡せる。
 
@@ -5979,8 +6047,10 @@ class PaymentProcessor {
 
 例13-5 テストダブルを渡す
 
+```
 PaymentProcessor paymentProcessor =
 　　new PaymentProcessor(new `TestDoubleCreditCardService`());
+```
 
 　コンストラクターの手動指定に関連する定形コードを減らすために、自動ディペンデンシーインジェクションフレームワークを利用してオブジェクトグラフを自動的に構築できる。Googleでは、Guice（[https://github.com/google/guice](https://github.com/google/guice)）とDagger（[https://dagger.dev/](https://dagger.dev/)）が、Javaコード用に一般に使われる自動ディペンデンシーインジェクションフレームワークである。
 
@@ -5998,6 +6068,7 @@ PaymentProcessor paymentProcessor =
 
 例13-6 モッキングフレームワーク
 
+```
 class PaymentProcessorTest {
   ...
   PaymentProcessor paymentProcessor;
@@ -6019,6 +6090,7 @@ class PaymentProcessorTest {
     assertThat(success).isFalse();
   }
 }
+```
 
 　主要プログラミング言語の大多数にはモッキングフレームワークが存在している。Googleでは、Java向けにはMockito、C++向けにはGoogletestのgooglemockコンポーネント（[https://github.com/google/googletest](https://github.com/google/googletest)）、Python向けにはunittest.mock（[https://oreil.ly/clzvH](https://oreil.ly/clzvH)）を用いている。
 
@@ -6038,6 +6110,7 @@ class PaymentProcessorTest {
 
 例13-7 単純なフェイク
 
+```
 // フェイクの作成は高速で容易である。
 AuthorizationService `fakeAuthorizationService` =
     new FakeAuthorizationService();
@@ -6050,6 +6123,7 @@ assertFalse(accessManager.userHasAccess(USER_ID));
 // 持つべきである。
 `fakeAuthorizationService`.addAuthorizedUser(new User(USER_ID));
 assertThat(accessManager.userHasAccess(USER_ID)).isTrue();
+```
 
 　テストダブルを使わなければならない場合、フェイクを使うのがテクニックとして理想的であることが多いが、テストで使わなければならないオブジェクト用のフェイクは存在していないかもしれない。そしてフェイクを書くのは難しい場合があり、それはフェイクが現在ならびに将来において本物の実装同様の挙動を持つことを担保しなければならないためだ。
 
@@ -6067,6 +6141,7 @@ assertThat(accessManager.userHasAccess(USER_ID)).isTrue();
 
 例13-8 スタビング
 
+```
 // モッキングフレームワークにより生成されたテストダブルを渡す。
 AccessManager accessManager = new AccessManager(`mockAuthorizationService`):
 
@@ -6077,6 +6152,7 @@ assertThat(accessManager.userHasAccess(USER_ID)).isFalse();
 // 非null値が返されるユーザーIDはアクセス権を持つべきである。
 when(`mockAuthorizationService`.lookupUser(USER_ID)).thenReturn(USER);
 assertThat(accessManager.userHasAccess(USER_ID)).isTrue();
+```
 
 　モッキングフレームワークなしでスタビングをやろうとすると、返り値をハードコードしたクラスを手動で新規作成するのに定形コードが必要なので、それを減らすためにスタビングはモッキングフレームワークを通じて行われるのが一般的である。
 
@@ -6092,6 +6168,7 @@ assertThat(accessManager.userHasAccess(USER_ID)).isTrue();
 
 例13-9 インタラクションテスト
 
+```
 // モッキングフレームワークにより生成されたテストダブルを渡す。
 AccessManager accessManager = new AccessManager(`mockAuthorizationService`);
 accessManager.userHasAccess(USER_ID);
@@ -6100,6 +6177,7 @@ accessManager.userHasAccess(USER_ID);
 // mockAuthorizationService.lookupUser(USER_ID)を
 // 呼び出さなかったならテストは失敗するだろう。
 verify(`mockAuthorizationService`).lookupUser(USER_ID);
+```
 
 　スタビング同様に、インタラクションテストは通常モッキングフレームワークを通じて行われる。そうすることで、関数の呼び出し回数とどの引数が渡されたかを把握しておくためのコードを含む新規クラスを手動で作成する場合に比べ、定形コードが減る。
 
@@ -6135,10 +6213,12 @@ verify(`mockAuthorizationService`).lookupUser(USER_ID);
 
 例13-10 `@DoNotMock`アノテーション
 
+```
 @DoNotMock("モッキングではなくSimpleQuery.create()を使え。")
 public abstract class Query {
   public abstract String getQueryValue();
 }
+```
 
   
 
@@ -6216,6 +6296,7 @@ Foo foo = new Foo(new A(new B(new C()), new D()), new E(), ..., new Z());
 
 例13-11 フェイクのファイルシステム
 
+```
 // このフェイクはFileSystemインターフェイスを実装する。
 // このインターフェイスは本物の実装にも使われている。
 public class `FakeFileSystem` implements `FileSystem` {
@@ -6237,6 +6318,7 @@ public class `FakeFileSystem` implements `FileSystem` {
     return contents;
   }
 }
+```
 
 ### 13.6.1　何故フェイクが重要なのか
 
@@ -6294,6 +6376,7 @@ public class `FakeFileSystem` implements `FileSystem` {
 
 例13-12 スタビングを使ってレスポンスをシミュレーションする
 
+```
 @Test public void getTransactionCount() {
   transactionCounter = new TransactionCounter(`mockCreditCardServer`);
   // スタビングを使いトランザクションを3つ返す。
@@ -6301,6 +6384,7 @@ public class `FakeFileSystem` implements `FileSystem` {
       newList(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3));
   assertThat(transactionCounter.getTransactionCount()).isEqualTo(3);
 }
+```
 
 ### 13.7.1　スタビングを使いすぎることによる危険
 
@@ -6320,7 +6404,9 @@ public class `FakeFileSystem` implements `FileSystem` {
 
 　スタビングの場合、スタブ化される関数が本物の実装のように振る舞うことを保証する手立ては存在しない。例えば、以下のコード断片内の文のように、`add()`メソッドの契約（「1と2が渡されてきたら、3が返されるだろう」）の一部をハードコードしている場合がそうだ。
 
+```
 when(stubCalculator.add(1, 2)).thenReturn(3);
+```
 
 　テスト対象システムが本物の実装の契約に依存しているなら、スタビングを行うことは下手な選択である。何故ならば、契約の詳細を複製することを強いられるだろうし、また契約が正しいこと（すなわち、スタブ化されている関数に本物の実装への忠実性があること）を保証しようがないからだ。
 
@@ -6334,6 +6420,7 @@ when(stubCalculator.add(1, 2)).thenReturn(3);
 
 例13-13 スタビングの使いすぎ
 
+```
 @Test public void creditCardIsCharged() {
   // モッキングフレームワークで作成したテストダブルを渡す。
   `paymentProcessor` =
@@ -6352,6 +6439,7 @@ when(stubCalculator.add(1, 2)).thenReturn(3);
   // 呼び出されたことを検証することである。
   verify(`mockCreditCardServer`).pay(transaction, creditCard, 500);
 }
+```
 
 　例13-14は同じテストを書き直したものだが、スタビングの利用は避けている。テストが短くなり、その実装詳細（トランザクションプロセッサーがどのように利用されているか等）がテスト内で公開されていない様子に注目してほしい。クレジットカードサーバーはどのように振る舞うべきかわかっているので、特別な構成は必要ない。
 
@@ -6359,6 +6447,7 @@ when(stubCalculator.add(1, 2)).thenReturn(3);
 
 例13-14 スタビングを避けるようにテストをリファクタリングする
 
+```
 @Test public void creditCardIsCharged() {
   `paymentProcessor` =
       new PaymentProcessor(`creditCardServer, transactionProcessor`);
@@ -6368,6 +6457,7 @@ when(stubCalculator.add(1, 2)).thenReturn(3);
   assertThat(`creditCardServer`.getMostRecentCharge(creditCard))
       .isEqualTo(500);
 }
+```
 
 　このようなテストが外部のクレジットカードサーバーと通信することが望ましくないのは明らかで、したがってフェイクのクレジットカードサーバーがより適しているだろう。フェイクが利用できないなら、密閉されたクレジットカードサーバーに通信する本物の実装を使うという別の選択肢があるが、テストの実行時間が増加することになる（密閉されたサーバーについては次章で探る）。
 
@@ -6395,6 +6485,7 @@ when(stubCalculator.add(1, 2)).thenReturn(3);
 
 例13-15 ステートテスト
 
+```
 @Test public void sortNumbers() {
   NumberSorter `numberSorter` = new NumberSorter(`quicksort, bubbleSort`);
   // テスト対象システムを呼び出す。
@@ -6403,6 +6494,7 @@ when(stubCalculator.add(1, 2)).thenReturn(3);
   // ある限り、どのソートアルゴリズムが使われるかは重要ではない。
   assertThat(`sortedList`).isEqualTo(newList(1, 2, 3));
 }
+```
 
 　例13-16は似たようなテストのシナリオを例示しているが、代わりにインタラクションテストを用いている。このテストでは、テストダブルが数値をソートする方法を知らないために、数値が実際にソートされているかを確定することが不可能であることに注目すべきだ。このテストダブルが告げることができるのは、テスト対象システムが数値のソートを試みたことだけである。
 
@@ -6410,6 +6502,7 @@ when(stubCalculator.add(1, 2)).thenReturn(3);
 
 例13-16 インタラクションテスト
 
+```
 @Test public void sortNumbers_quicksortIsUsed() {
   // モッキングフレームワークにより生成されたテストダブルを渡す。
   NumberSorter `numberSorter` =
@@ -6424,6 +6517,7 @@ when(stubCalculator.add(1, 2)).thenReturn(3);
   // 場合にはテストが失敗する。
   verify(`mockQuicksort`).sort(newList(3, 1, 2));
 }
+```
 
 　Googleでは、ステートテストに重点を置く方がよりスケーラブルであることがわかっている。ステートテストは、テストの脆さを減少させ、コードの変更と保守が長期的には容易になる。
 
@@ -6474,6 +6568,7 @@ when(stubCalculator.add(1, 2)).thenReturn(3);
 
 例13-17 状態変更型関数と非状態変更型関数の相互作用
 
+```
 @Test public void grantUserPermission() {
   UserAuthorizer userAuthorizer =
       new UserAuthorizer(`mockUserService, mockPermissionDatabase`);
@@ -6492,6 +6587,7 @@ when(stubCalculator.add(1, 2)).thenReturn(3);
   // 点がある。
   verify(`mockPermissionDatabase`)`.getPermission`(FAKE_USER);
 }
+```
 
 #### 13.8.3.2　過剰な指定は避けよ
 
@@ -6509,6 +6605,7 @@ when(stubCalculator.add(1, 2)).thenReturn(3);
 
 例13-18：過剰な指定が行われたインタラクションテスト
 
+```
 @Test public void displayGreeting_renderUserName() {
   when(mockUserService.getUserName()).thenReturn("偽ユーザー");
   userGreeter.displayGreeting(); // テスト対象システムを呼び出す。
@@ -6521,6 +6618,7 @@ when(stubCalculator.add(1, 2)).thenReturn(3);
   // すぎないとしてもだ。
   verify(`userPrompt`)`.setIcon`(IMAGE_SUNSHINE);
 }
+```
 
 　例13-9では、関連する引数と関数の指定にもっと注意を払ったインタラクションテストを例示する。テストされる複数の挙動は別々のテストへ分けられ、各テストは、テストしている挙動が正しいことの保証に必要な最小限の量を検証している。
 
@@ -6528,6 +6626,7 @@ when(stubCalculator.add(1, 2)).thenReturn(3);
 
 例13-19 適切な指定が行われているインタラクションテスト
 
+```
 @Test public void displayGreeting_renderUserName() {
   when(mockUserService.getUserName()).thenReturn("偽ユーザー");
   userGreeter.displayGreeting(); // テスト対象システムを呼び出す。
@@ -6539,6 +6638,7 @@ when(stubCalculator.add(1, 2)).thenReturn(3);
   verify(`userPrompt`)`.setText`(any(), eq("おはようございます!"), any());
   verify(`userPrompt`)`.setIcon`(IMAGE_SUNSHINE);
 }
+```
 
 ## 13.9　結論
 
@@ -8542,6 +8642,7 @@ javac *.java
 
 　大多数の現代的なビルドシステムは、シェルスクリプトの代わりに、ビルド実行方法を記述するビルドファイルの作成をエンジニアに要求する。Antのマニュアル（[https://oreil.ly/WL9ry](https://oreil.ly/WL9ry)）から以下の例を見てみよう。
 
+```xml
 <project name="MyProject" default="dist" basedir=".">
   <description>
   単純なビルドファイル例
@@ -8580,6 +8681,7 @@ javac *.java
     <delete dir="${dist}"/>
   </target>
 </project>
+```
 
 　ビルドファイルはXMLで書かれており、ビルドに関する多少の単純なメタデータを、タスクのリスト（XML内の`<target>`タグ[†6](https://learning.oreilly.com/library/view/googlenosohutoueaenziniaringu-chi-sok-ke-neng-napuroguraminguwozhi-eruji-shu-wen-hua-purosesu/9784873119656/xhtml/p-025.xhtml#ref-chap20_6)）とともに定義する。各タスクはAntが定義している使用可能コマンドのリストに入っているコマンドを実行し、ここでのコマンドはディレクトリーの作成と削除、`javac`の実行、JARファイルの作成を含む。このコマンドのセットは、どんな種類のロジックでも対象として扱うためにユーザー提供のプラグインにより拡張可能である。各タスクはまた、`depends`属性を通じて依存対象のタスクを定義することもできる。こうした依存関係は非巡回グラフ（acyclic graph）[†7](https://learning.oreilly.com/library/view/googlenosohutoueaenziniaringu-chi-sok-ke-neng-napuroguraminguwozhi-eruji-shu-wen-hua-purosesu/9784873119656/xhtml/p-025.xhtml#ref-chap20_7)を形成する（図18-1参照）。
 
@@ -8669,6 +8771,7 @@ jar cf dist/lib/MyProject-$(date --iso-8601).jar build/*
 
 　Bazelの具体的機能：Bazelは、Googleの社内ビルドツールBlazeのオープンソース版であり、アーティファクトベースのビルドシステムの良い例である。以下は、Bazelでのビルドファイル（通常はBUILDという名称）がどのようなものかを示す。
 
+```
 java_binary(
   name = "MyBinary",
   srcs = ["MyBinary.java"],
@@ -8687,6 +8790,7 @@ java_library(
         "@com_google_common_guava_guava//jar",
     ],
 )
+```
 
 　Bazelでは、BUILDファイルでターゲットを定義する。ここでの2種類のターゲットは、`java_binary`と`java_library`である。全てのターゲットが、システムにより生成可能なアーティファクトに対応する。すなわち、`binary`ターゲットは直接実行可能なバイナリを生成し、`library`ターゲットは、バイナリまたは他のライブラリーが利用可能なライブラリーを生成する。全てのターゲットにはname（コマンドラインと、他のターゲットからどのような名前で参照されるかを定義する）、srcs（そのターゲットのアーティファクトを生成するためにコンパイルが必須であるソースファイルを定義する）、deps（このアーティファクトの前にビルドされ、このアーティファクトにリンクされなければならない、他のターゲットを定義する）がある。依存関係は、同パッケージ内（例：`MyBinary`の「`:mylib`」への依存）でも、同じソース階層の別パッケージ（例：`mylib`の、「`//java/com/example/common`」への依存）でも、ソース階層の外のサードパーティのアーティファクト（例：`mylib`の「`@com_google_common_guava_guava//jar`」への依存）でもよい。各ソース階層はワークスペースと呼ばれ、ルートにある特別なWORKSPACEファイルの存在により識別される。
 
