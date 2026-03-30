@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "ソフトウェアアーキテクチャの基礎第2版.md",
+                "file": "Designing Data-Intensive Applications, 2nd Edition.ja.md",
                 "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "ソフトウェアアーキテクチャの基礎第2版"
+              "title": "Designing Data-Intensive Applications, 2nd Edition.ja"
             }
           }
         ]
@@ -170,8 +170,8 @@
   },
   "active": "35028e65a3395b1b",
   "lastOpenFiles": [
+    "ソフトウェアアーキテクチャの基礎第2版.md",
     "LLMのプロンプトエンジニアリング.md",
-    "Designing Data-Intensive Applications, 2nd Edition.md",
-    "ソフトウェアアーキテクチャの基礎第2版.md"
+    "Designing Data-Intensive Applications, 2nd Edition.md"
   ]
 }
