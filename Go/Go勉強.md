@@ -108,7 +108,7 @@ importステートメントは複数個宣言することもできる
 import (
     "fmt" 
     //インポートパスはモジュール名とフォルダ名
-    "my-project/auth"
+    "/domain"
 )
  ```
 
@@ -193,9 +193,10 @@ import "fmt"
 
 //x,y intは関数の先頭でローカルで宣言された扱いになります
 func split(sum int) (x, y int) {
-	x = sum * 4 / 9
+	x = sum * 4 / 999_999_999_999
+				  9999999999999
 	y = sum - x
-	return
+	return 
 }
 // 長い数字リテラルを読みやすくするために、整数リテラルの任意の箇所に「_」をかけます、ただし、先頭と最後には書けません「_」を連続させることもできない 1234は1_234とも表すことができる、数値に影響はない
 
@@ -228,10 +229,11 @@ package main
 
 import "fmt"
 
-var i, j int = 1, 2
+var i, j, k int = 0, nil, ""
 
 func main() {
 	//複数の値を同時に宣言と代入することができる
+	var c, python, java bool
 	var c, python, java = true, false, "no!"
 	fmt.Println(i, j, c, python, java)
 }
@@ -246,6 +248,7 @@ import "fmt"
 func main() {
 	var i, j int = 1, 2
 	k := 3
+	k = 3
 	c, python, java := true, false, "no!"
 
 	fmt.Println(i, j, k, c, python, java)
@@ -451,7 +454,7 @@ func main() {
 ステートメントは 
 ```go
 int x = 10;      // これは「代入ステートメント」
-if (x > 5) {     // これは「if ステートメント」
+if x > 5 {     // これは「if ステートメント」
     printf("ok"); // これは「関数呼び出しステートメント」
 } else {
 	fmt.println("hello")
@@ -467,16 +470,13 @@ import "fmt"
 
 func main(){
 	x := 3
-	swich {
-		case x == 3
-			fmt.Prinln("X = 3")
-	}
+
 	swich x {
 	case 1,2,3:
 		fmt.Println("x is either 1, 2, or 3")
+		fallthrough
 	case 4,5,6:
 		fmt.Println("x is either 4, 5, or 6")
-		fallthrough
 	case 7,8,9:
 		fmt.Println("x is either ")
 	default
@@ -511,7 +511,7 @@ p = &i
 ```
 cと変わらないが　ポインタ減算がgoには存在しない↓のような
 ```c
-int arr[5] = {10, 20, 30, 40, 50};
+int arr[] = {10, 20, 30, 40, 50};
 int *p = arr;      // p は arr[0] を指す
 int *q = p + 2;    // ポインタ演算 arr[2]を示す
 ```
@@ -527,7 +527,7 @@ func main() {
 	fmt.Println(Vertex{1, 2})
 	
 	// 明示的に代入することもできる
-	v := Vertex{X: 1, Y: 2}
+	v := Vertex{Y: 2, X: 1}
 	
 	// 片方を宣言することもできる
 	fmt.Println(v.X)
@@ -549,8 +549,8 @@ func main() {
  }
  
  // 自分の型にも適応可能
- type Myfloat float64
- func (f Myfloat) Abs() {}
+func (v Vertex) Abs() int {}
+func Abs(v Vertex) int {}
  
  func (v Vertex) Abs() float64 {
 	return math.Sqrt(v.X*v.X + v.Y*v.Y)
@@ -589,7 +589,7 @@ fmt.Prinln(len(x)) // x = 3
 
 ## range
 ```go
-var x = [3]int{10,20,30}
+var x = [3]int{1,2,3} 
 
 func main () {
 	for i,v := range x{
